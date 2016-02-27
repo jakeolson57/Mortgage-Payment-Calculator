@@ -1,0 +1,70 @@
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+  int mortgage_cost, down_payment;
+  double total_financed;
+  int payment_term = 0;
+  double monthly_payment = 1500;
+  int payment_per_year = 12;
+  double interest_rate_intro = 0.06;
+  double interest_rate_extended_time = 0.07;
+  int program_trigger = 0;
+  double initial_financed = 0;
+
+  std::cout << "Type in the amount you're paying in a down payment" << std::endl;
+  std::cin >> down_payment;
+  std::cout << "How much is the house you're buying" << std::endl;
+  std::cin >> mortgage_cost;
+
+  total_financed = mortgage_cost - down_payment;
+  initial_financed = total_financed;
+  std::cout << "So you're going to finance $" << fixed << setprecision (2) << total_financed << std::endl;
+
+  while (total_financed > monthly_payment) { // While there's still a lot to pay off
+    payment_term = payment_term + 1;
+    if (payment_term <= 36) { // Checking if there should be the introductory interest rate or the extended interest rate
+      total_financed = total_financed * (1 + (interest_rate_intro/payment_per_year));
+      total_financed = total_financed - monthly_payment;
+      std::cout << "This is month " << payment_term << " and you have a total of $" << setprecision (2) << total_financed << " to still pay off" << std::endl;
+    }
+    else if (total_financed > initial_financed) { // Check to see if the interest will overtake the payments
+      std::cout << "You overspent! You're never going to be able to pay off the mortgage because of the interest!" << std::endl;
+
+      return 0;
+    } else {  // Loop will default to here when over 36 months and intereest isn't overtaking payments (extended interest rate)
+      total_financed = total_financed * (1 + (interest_rate_extended_time/payment_per_year));
+      total_financed = total_financed - monthly_payment;
+      std::cout << "This is month " << payment_term << " and you have a total of $" << setprecision (2) << total_financed << " to still pay off" << std::endl;
+    }
+  }
+
+  while ((total_financed < monthly_payment) && (total_financed > 0)) {
+    payment_term = payment_term + 1;
+    if (payment_term <= 36) {
+      total_financed = total_financed * (1 + (interest_rate_intro / payment_per_year));
+      std::cout << "This month" << "you're only paying $" << setprecision (2) << total_financed << std::endl;
+      monthly_payment = total_financed;
+      total_financed = total_financed - monthly_payment;
+      std::cout << "After paying your monthly payment, you're all paid off! Congrats!" << std::endl;
+    } else {
+      total_financed = total_financed * (1 + (interest_rate_extended_time/payment_per_year));
+      std::cout << "This month, you're only paying $" << setprecision (2) << total_financed << std::endl;
+      monthly_payment = total_financed;
+      total_financed = total_financed - monthly_payment;
+      std::cout << "After paying your monthly payment, you're all paid off! Congrats!" << std::endl;
+    }
+  }
+  while (total_financed == 0 && program_trigger == 0) {
+    std::cout << "It took you a total time of " << payment_term << " months to pay off your mortgage" << std::endl;
+    program_trigger = program_trigger + 1;
+  }
+
+  char dummy;
+  std::cout << "Enter any key to quit." << std::endl;
+  std::cin >> dummy;
+
+  return 0;
+}
